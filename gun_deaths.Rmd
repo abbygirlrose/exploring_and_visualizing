@@ -1,6 +1,6 @@
 ---
 title: "Exploring Gun Deaths in America"
-author: "Your name"
+author: "Abigail Bergman"
 output: github_document
 ---
 
@@ -22,20 +22,27 @@ gun_deaths
 library(tidyverse)
 library(knitr)
 library(rcfss)
-#Rename months 
-month <- c(1,2,3,4,5,6,7,8,9,10,11,12)
-month.abb[month]
-count(gun_deaths, month) %>%
-kable(caption = "Gun Deaths in the US from 2012-14, shown by month", col.names = c("month","Number of Gun Deaths"))
+
+count(gun_deaths, month)
+
 ### Print the data frame as a formatted `kable()` table.
 
 ```{r}
-
+count(gun_deaths, month) %>%
+kable(caption = "Gun Deaths in the US from 2012-14, shown by month", col.names = c("Month","Number of Gun Deaths"))
 ```
 
 ### Generate a bar chart with human-readable labels on the x-axis. That is, each month should be labeled "Jan", "Feb", "Mar" (full or abbreviated month names are fine), not `1`, `2`, `3`.
 
 ```{r}
+#Rename months 
+month <- c(1,2,3,4,5,6,7,8,9,10,11,12)
+month.abb[month]
+
+ggplot(gun_deaths, aes(month), ylab = "Number of Gun Deaths") + geom_bar() 
+
+#Below chunk isnt working  
+  scale_x_discrete(name="month", breaks = c("1","2","3","4","5","6","7","8","9","10","11","12"), labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) 
 
 ```
 

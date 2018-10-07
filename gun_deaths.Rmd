@@ -19,7 +19,14 @@ gun_deaths
 ```
 
 ## Generate a data frame that summarizes the number of gun deaths per month.
-
+library(tidyverse)
+library(knitr)
+library(rcfss)
+#Rename months 
+month <- c(1,2,3,4,5,6,7,8,9,10,11,12)
+month.abb[month]
+count(gun_deaths, month) %>%
+kable(caption = "Gun Deaths in the US from 2012-14, shown by month", col.names = c("month","Number of Gun Deaths"))
 ### Print the data frame as a formatted `kable()` table.
 
 ```{r}

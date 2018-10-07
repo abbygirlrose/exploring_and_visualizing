@@ -43,19 +43,31 @@ ggplot(gun_deaths, aes(month), ylab = "Number of Gun Deaths") + geom_bar()
 
 #Below chunk isnt working  
   scale_x_discrete(name="month", breaks = c("1","2","3","4","5","6","7","8","9","10","11","12"), labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) 
+  
+  
+gun_deaths %>%
+  drop_na(month) %>%
+  ggplot(aes(x=month))+geom_bar()  
 
 ```
 
 ## Generate a bar chart that identifies the number of gun deaths associated with each type of intent cause of death. The bars should be sorted from highest to lowest values.
 
 ```{r}
+#https://stackoverflow.com/questions/17216358/eliminating-nas-from-a-ggplot
+gun_deaths %>%
+  drop_na(intent) %>%
+  ggplot(aes(x=intent)) +geom_bar()
 
+#Still trying to reorder graph
 ```
 
 ## Generate a boxplot visualizing the age of gun death victims, by sex. Print the average age of female gun death victims.
 
 ```{r}
-
+gun_deaths %>%
+  ggplot(aes(x=sex, y =age))+geom_boxplot()
+#still need to print average
 ```
 
 ## How many white males with at least a high school education were killed by guns in 2012?

@@ -10,7 +10,7 @@ output: github_document
 # don't modify this chunk unless you still need to install rcfss
 # if so, run "devtools::install_github("uc-cfss/rcfss")" in the console first
 
-library(tidyverse)    # load tidyverse packages, including ggplot2
+library(tidyverse)    # load tidyverse packages, including ggplot2 
 library(rcfss)
 
 # load the data
@@ -28,8 +28,8 @@ count(gun_deaths, month)
 ### Print the data frame as a formatted `kable()` table.
 
 ```{r}
-count(gun_deaths, month) %>%
-kable(caption = "Gun Deaths in the US from 2012-14, shown by month", col.names = c("Month","Number of Gun Deaths"))
+(month_count <- count(gun_deaths, month) %>%
+kable(caption = "Gun Deaths in the US from 2012-14, shown by month", col.names = c("Month","Number of Gun Deaths")))
 ```
 
 ### Generate a bar chart with human-readable labels on the x-axis. That is, each month should be labeled "Jan", "Feb", "Mar" (full or abbreviated month names are fine), not `1`, `2`, `3`.
@@ -45,19 +45,22 @@ ggplot(gun_deaths, aes(month), ylab = "Number of Gun Deaths") + geom_bar()
   scale_x_discrete(name="month", breaks = c("1","2","3","4","5","6","7","8","9","10","11","12"), labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) 
   
   
-gun_deaths %>%
+(by_month <- gun_deaths %>%
   drop_na(month) %>%
-  ggplot(aes(x=month))+geom_bar()  
+  ggplot(aes(x=month))+geom_bar()) 
 
 ```
 
 ## Generate a bar chart that identifies the number of gun deaths associated with each type of intent cause of death. The bars should be sorted from highest to lowest values.
 
 ```{r}
-#https://stackoverflow.com/questions/17216358/eliminating-nas-from-a-ggplot
+
+
 gun_deaths %>%
+   arrange(desc(intent)) %>%
   drop_na(intent) %>%
   ggplot(aes(x=intent)) +geom_bar()
+
 
 #Still trying to reorder graph
 ```
@@ -65,14 +68,26 @@ gun_deaths %>%
 ## Generate a boxplot visualizing the age of gun death victims, by sex. Print the average age of female gun death victims.
 
 ```{r}
+#make boxplot
 gun_deaths %>%
   ggplot(aes(x=sex, y =age))+geom_boxplot()
-#still need to print average
+
+#print female average
+
+group_by(gun_deaths, sex)%>%
+  filter(sex == "F") %>%
+  summarize(avg_age = mean(age, na.rm=TRUE))
+
 ```
 
 ## How many white males with at least a high school education were killed by guns in 2012?
 
 ```{r}
+#COME BACK TO THIS
+filter(gun_deaths, education != "Less than HS") %>%
+  group_by(race == "white") %>%
+  summarize(white_males = sex == "M", na.rm=TRUE)
+
 
 ```
 
@@ -86,6 +101,14 @@ Assume that:
 * Fall = October-December
 
 ```{r}
+# convert continuous to categorical
+(season <- gun_deaths%>% 
+  mutate(Season=cut(month, breaks=c("0", "3", "6", "9", "12"), labels=c("Winter","Spring","Summer", "Fall")))) 
+
+group_by(gun_deaths, Season) %>% 
+  count
+#STILL NEED TO FIND SEASON WITH MOST
+ 
 
 ```
 

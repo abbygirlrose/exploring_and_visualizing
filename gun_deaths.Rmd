@@ -19,11 +19,14 @@ gun_deaths
 ```
 
 ## Generate a data frame that summarizes the number of gun deaths per month.
+```{r}
 library(tidyverse)
 library(knitr)
 library(rcfss)
 
-count(gun_deaths, month)
+count(gun_deaths, month) 
+
+```
 
 ### Print the data frame as a formatted `kable()` table.
 
@@ -59,8 +62,7 @@ ggplot(gun_deaths, aes(month), ylab = "Number of Gun Deaths") + geom_bar()
 gun_deaths %>%
    arrange(desc(intent)) %>%
   drop_na(intent) %>%
-  ggplot(aes(x=intent)) +geom_bar() + labs(title = "Number of gun deaths by intent")
-
+  ggplot(aes(x=intent)) + geom_bar() + labs(title = "Number of gun deaths by intent")
 
 #Still trying to reorder graph
 ```
@@ -70,7 +72,9 @@ gun_deaths %>%
 ```{r}
 #make boxplot
 gun_deaths %>%
-  ggplot(aes(x=sex, y =age))+geom_boxplot()
+  ggplot(aes(x=sex, y =age)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of age of gun death victims, by sex")
 
 #print female average
 
@@ -86,7 +90,7 @@ group_by(gun_deaths, sex)%>%
 #COME BACK TO THIS
 filter(gun_deaths, education != "Less than HS") %>%
   group_by(race == "white") %>%
-  summarize(white_males = sex == "M", na.rm=TRUE)
+  count(white_males = sex == "M", na.rm=TRUE)
 
 
 ```
@@ -115,6 +119,14 @@ group_by(gun_deaths, Season) %>%
 # Are whites who are killed by guns more likely to die because of suicide or homicide? How does this compare to blacks and hispanics?
 
 ```{r}
+#make bar graph of whites by type of death
+filter(gun_deaths, race == "White") %>%
+  group_by(intent) %>%
+  drop_na(intent) %>%
+
+  
+filter(gun_deaths, race == "White") %>%
+  group_by(intent) + ggplot()
 
 ```
 

@@ -47,7 +47,7 @@ ggplot(gun_deaths, aes(month), ylab = "Number of Gun Deaths") + geom_bar()
   
 (by_month <- gun_deaths %>%
   drop_na(month) %>%
-  ggplot(aes(x=month))+geom_bar()) 
+  ggplot(aes(x=month)) +geom_bar()) + labs(title="Gun deaths by month")
 
 ```
 
@@ -59,7 +59,7 @@ ggplot(gun_deaths, aes(month), ylab = "Number of Gun Deaths") + geom_bar()
 gun_deaths %>%
    arrange(desc(intent)) %>%
   drop_na(intent) %>%
-  ggplot(aes(x=intent)) +geom_bar()
+  ggplot(aes(x=intent)) +geom_bar() + labs(title = "Number of gun deaths by intent")
 
 
 #Still trying to reorder graph
@@ -76,7 +76,7 @@ gun_deaths %>%
 
 group_by(gun_deaths, sex)%>%
   filter(sex == "F") %>%
-  summarize(avg_age = mean(age, na.rm=TRUE))
+  summarize(avg_age = mean(age, na.rm=TRUE)) 
 
 ```
 

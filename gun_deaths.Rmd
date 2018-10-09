@@ -39,18 +39,11 @@ kable(caption = "Gun Deaths in the US from 2012-14, shown by month", col.names =
 
 ```{r}
 #Rename months 
-month <- c(1,2,3,4,5,6,7,8,9,10,11,12)
-month.abb[month]
 
-ggplot(gun_deaths, aes(month), ylab = "Number of Gun Deaths") + geom_bar() 
-
-#Below chunk isnt working  
-  scale_x_discrete(name="month", breaks = c("1","2","3","4","5","6","7","8","9","10","11","12"), labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) 
-  
-  
 (by_month <- gun_deaths %>%
   drop_na(month) %>%
-  ggplot(aes(x=month)) +geom_bar()) + labs(title="Gun deaths by month")
+  ggplot(aes(x=month)) +geom_bar()) + labs(title="Gun deaths by month") + scale_x_discrete(limits = c("1","2","3","4","5","6","7","8","9","10","11","12"), labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+  
 
 ```
 

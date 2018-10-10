@@ -50,14 +50,15 @@ kable(caption = "Gun Deaths in the US from 2012-14, shown by month", col.names =
 ## Generate a bar chart that identifies the number of gun deaths associated with each type of intent cause of death. The bars should be sorted from highest to lowest values.
 
 ```{r}
-
-
-gun_deaths %>%
-   arrange(desc(intent)) %>%
+#make new data frame reordering 
+n_intent <- gun_deaths %>%
   drop_na(intent) %>%
-  ggplot(aes(x=intent)) + geom_bar() + labs(title = "Number of gun deaths by intent")
+  count(intent)
 
-#Still trying to reorder graph
+#make column chart
+  ggplot(n_intent, aes(x=reorder(intent, -n), y = n)) + geom_col() + labs(title = "Number of gun deaths by intent") 
+
+
 ```
 
 ## Generate a boxplot visualizing the age of gun death victims, by sex. Print the average age of female gun death victims.
@@ -66,14 +67,13 @@ gun_deaths %>%
 #make boxplot
 gun_deaths %>%
   ggplot(aes(x=sex, y =age)) +
-  geom_boxplot() +
-  labs(title = "Boxplot of age of gun death victims, by sex")
+  geom_boxplot() + labs(title = "Boxplot of age of gun death victims by sex")
 
 #print female average
 
 group_by(gun_deaths, sex)%>%
   filter(sex == "F") %>%
-  summarize(avg_age = mean(age, na.rm=TRUE)) 
+  summarize(avg_age = mean(age, na.rm=TRUE))
 
 ```
 
@@ -121,6 +121,15 @@ filter(gun_deaths, race == "White") %>%
 filter(gun_deaths, race == "White") %>%
   group_by(intent) + ggplot()
 
++facet_wrap(~race)
+# want a table that is race by intent
+
+group_by(gun_deaths, intent) %>%
+  filter(race == "White" | "")
+
+gun_deaths %>%
+  ggplot(aes(x=race, y =intent)) +
+  geom_boxplot()
 ```
 
 ## Are police-involved gun deaths significantly different from other gun deaths? Assess the relationship between police involvement and age, police involvement and race, and the intersection of all three variables.

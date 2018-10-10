@@ -51,9 +51,9 @@ kable(caption = "Gun Deaths in the US from 2012-14, shown by month", col.names =
 
 ```{r}
 #make new data frame reordering 
-n_intent <- gun_deaths %>%
+(n_intent <- gun_deaths %>%
   drop_na(intent) %>%
-  count(intent)
+  count(intent))
 #https://stackoverflow.com/questions/16961921/plot-data-in-descending-order-as-appears-in-data-frame
 
 #make column chart
@@ -81,7 +81,6 @@ group_by(gun_deaths, sex)%>%
 ## How many white males with at least a high school education were killed by guns in 2012?
 
 ```{r}
-#COME BACK TO THIS
 filter(gun_deaths, year== 2012, sex =="M", race == "White") %>%
   group_by(education) %>%
   count()
@@ -105,10 +104,13 @@ Assume that:
 ```{r}
 # convert continuous to categorical
 (season <- gun_deaths%>% 
-  mutate(Season=cut(month, breaks=c("0", "3", "6", "9", "12"), labels=c("Winter","Spring","Summer", "Fall")))) 
+  mutate(Season=cut(month, breaks=c("0", "3", "6", "9", "12"), labels=c("Winter","Spring","Summer", "Fall"))) %>%
+  group_by(Season) %>%
+   count())
 
-ggplot(season) + geom_bar()
- 
+ggplot(season, aes(x=Season, y=n)) + geom_col() + labs(title = "Gun deaths by season, 2012-14", y = "Gun deaths") 
+
+# Summer had the most gun deaths
 
 ```
 
@@ -116,23 +118,25 @@ ggplot(season) + geom_bar()
 
 ```{r}
 #make bar graph of whites by type of death
-filter(gun_deaths, race == "White") %>%
-  group_by(intent) %>%
-  drop_na(intent) %>%
+(likely <- gun_deaths %>%
+  filter((intent == "Homicide" | intent == "Suicide") & (race == "White" | race == "Black" | race == "Hispanic")) %>%
+  group_by(race, intent) %>%
+  count())
 
-  
-filter(gun_deaths, race == "White") %>%
-  group_by(intent) + ggplot()
+ggplot(likely, aes(x = race, y = n, fill = intent)) + geom_col() + labs(title = "Comparison of Homicide vs. Suicide over WHites, Blacks, and Hispanics", y = "Gun Deaths")
 
-+facet_wrap(~race)
-# want a table that is race by intent
+#Better graph
+(likely_all <- gun_deaths %>%
+  group_by(race, intent) %>%
+  count())
 
-group_by(gun_deaths, intent) %>%
-  filter(race == "White" | "")
+ggplot(likely_all, aes(x = race, y = n, fill = intent)) + geom_col(position = "fill") + labs(title = "Comparison of Homicide vs. Suicide over Whites, Blacks, and Hispanics", x = "Race", y = "Gun Deaths")
 
-gun_deaths %>%
-  ggplot(aes(x=race, y =intent)) +
-  geom_boxplot()
+#Whites are more likely to die from suicide
+#Blacks are more likely to die from homicide
+#Hispanics are more likely to die from homicide
+
+
 ```
 
 ## Are police-involved gun deaths significantly different from other gun deaths? Assess the relationship between police involvement and age, police involvement and race, and the intersection of all three variables.

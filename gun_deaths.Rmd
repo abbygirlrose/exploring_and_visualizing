@@ -42,7 +42,7 @@ kable(caption = "Gun Deaths in the US from 2012-14, shown by month", col.names =
 
 (by_month <- gun_deaths %>%
   drop_na(month) %>%
-  ggplot(aes(x=month)) +geom_bar()) + labs(title="Gun deaths by month") + scale_x_discrete(limits = c("1","2","3","4","5","6","7","8","9","10","11","12"), labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+  ggplot(aes(x=month)) +geom_bar()) + labs(title="Gun deaths by month 2012-14") + scale_x_discrete(limits = c("1","2","3","4","5","6","7","8","9","10","11","12"), labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
   
 
 ```
@@ -54,9 +54,10 @@ kable(caption = "Gun Deaths in the US from 2012-14, shown by month", col.names =
 n_intent <- gun_deaths %>%
   drop_na(intent) %>%
   count(intent)
+#https://stackoverflow.com/questions/16961921/plot-data-in-descending-order-as-appears-in-data-frame
 
 #make column chart
-  ggplot(n_intent, aes(x=reorder(intent, -n), y = n)) + geom_col() + labs(title = "Number of gun deaths by intent") 
+  ggplot(n_intent, aes(x=reorder(intent, -n), y = n)) + geom_col() + labs(title = "Number of gun deaths by intent 2012-14", x = "Intent", y = "Number of deaths") 
 
 
 ```
@@ -67,7 +68,7 @@ n_intent <- gun_deaths %>%
 #make boxplot
 gun_deaths %>%
   ggplot(aes(x=sex, y =age)) +
-  geom_boxplot() + labs(title = "Boxplot of age of gun death victims by sex")
+  geom_boxplot() + labs(title = "Boxplot of age of gun death victims by sex 2012-14")
 
 #print female average
 
@@ -81,9 +82,13 @@ group_by(gun_deaths, sex)%>%
 
 ```{r}
 #COME BACK TO THIS
-filter(gun_deaths, education != "Less than HS") %>%
-  group_by(race == "white") %>%
-  count(white_males = sex == "M", na.rm=TRUE)
+filter(gun_deaths, year== 2012, sex =="M", race == "White") %>%
+  group_by(education) %>%
+  count()
+
+total <- (7912+4258+3029)
+
+#15199 whites males with at least a high school education were killed by guns in 2012
 
 
 ```
@@ -102,9 +107,7 @@ Assume that:
 (season <- gun_deaths%>% 
   mutate(Season=cut(month, breaks=c("0", "3", "6", "9", "12"), labels=c("Winter","Spring","Summer", "Fall")))) 
 
-group_by(gun_deaths, Season) %>% 
-  count
-#STILL NEED TO FIND SEASON WITH MOST
+ggplot(season) + geom_bar()
  
 
 ```

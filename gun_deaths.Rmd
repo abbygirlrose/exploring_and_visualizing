@@ -143,6 +143,11 @@ ggplot(likely_all, aes(x = race, y = n, fill = intent)) + geom_col(position = "f
 
 ```{r}
 
+gun_deaths %>%
+  group_by(police)%>%
+  count()
+
+
 ```
 
 ## Session info

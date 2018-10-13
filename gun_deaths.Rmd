@@ -75,6 +75,8 @@ group_by(gun_deaths, sex)%>%
   filter(sex == "F") %>%
   summarize(avg_age = mean(age, na.rm=TRUE))
 
+print("Female Average = 43.69507")
+
 ```
 
 ## How many white males with at least a high school education were killed by guns in 2012?
@@ -86,7 +88,7 @@ filter(gun_deaths, year== 2012, sex =="M", race == "White") %>%
 
 total <- (7912+4258+3029)
 
-#15199 whites males with at least a high school education were killed by guns in 2012
+print("15199 whites males with at least a high school education were killed by guns in 2012")
 
 
 ```
@@ -109,20 +111,14 @@ Assume that:
 
 ggplot(season, aes(x=Season, y=n)) + geom_col() + labs(title = "Gun Deaths by Season, 2012-14", y = "Gun deaths") 
 
-# Summer had the most gun deaths
+print("Summer had the most gun deaths")
+
 
 ```
 
 # Are whites who are killed by guns more likely to die because of suicide or homicide? How does this compare to blacks and hispanics?
 
 ```{r}
-#make bar graph of whites by type of death
-(likely <- gun_deaths %>%
-  filter((intent == "Homicide" | intent == "Suicide") & (race == "White" | race == "Black" | race == "Hispanic")) %>%
-  group_by(race, intent) %>%
-  count())
-
-ggplot(likely, aes(x = race, y = n, fill = intent)) + geom_col() + labs(title = "Comparison of Homicide vs. Suicide over WHites, Blacks, and Hispanics", y = "Gun Deaths")
 
 #Better graph
 (likely_all <- gun_deaths %>%
@@ -131,9 +127,7 @@ ggplot(likely, aes(x = race, y = n, fill = intent)) + geom_col() + labs(title = 
 
 ggplot(likely_all, aes(x = race, y = n, fill = intent)) + geom_col(position = "fill") + labs(title = "Comparison of Homicide vs. Suicide over Whites, Blacks, and Hispanics", x = "Race", y = "Gun Deaths") + scale_y_continuous(labels = scales::percent)
 
-#Whites are more likely to die from suicide
-#Blacks are more likely to die from homicide
-#Hispanics are more likely to die from homicide
+print("Whites are more likely to die from suicide, Blacks are more likely to die from homicide, Hispanics are more likely to die from homicide")
 
 
 ```
@@ -142,25 +136,32 @@ ggplot(likely_all, aes(x = race, y = n, fill = intent)) + geom_col(position = "f
 
 ```{r}
 #make a table showing number of gun deaths associated with police and not associated with police
-gun_deaths %>%
-  group_by(police)%>%
+
+gun <- gun_deaths %>%
+  mutate(bypolice = ifelse(police %in% 0, "Non Police Involved","Police Involved"))
+ 
+gun %>%
+  group_by(bypolice)%>%
   count()
 
-#gun deaths and age - need to relabel 
-ggplot(gun_deaths, aes(group=police, y = age), at = c("0", "1"), names = c("Non Police Involved", "Police Involved")) + geom_boxplot() + labs(title = "Police Involved vs Non Police Involved Deaths, By Age, 2012-14", y = "Age of Victim")
+print("There are 99396 non police involved gun deaths and 1402 police involved gun deaths")
 
+#gun deaths and age
+ggplot(gun, aes(x=bypolice, y = age)) + geom_boxplot() + labs(title = "Police Involved vs Non Police Involved Deaths, By Age, 2012-14", y = "Age of Victim", x = "Shooting Type")
 
 
 #comparison by race
-(race_police <- gun_deaths %>%
-  group_by(race, police) %>%
+(race_police <- gun %>%
+  group_by(race, bypolice) %>%
   count())
 
-ggplot(race_police, aes(x = police, y = n, fill = race)) + geom_col(position = "fill") + labs("Police Involved vs Non Police Involved Deaths, By Race, 2012-14", y = "Percentage of Gun Deaths", x = "Police Involved?") + scale_x_discrete(limits = c("0", "1"), labels = c("Non Police Involved", "Police Involved"))
-  
-#All three variables
+ggplot(race_police, aes(x = bypolice, y = n, fill = race)) + geom_col(position = "fill") + labs("Police Involved vs Non Police Involved Deaths, By Race, 2012-14", y = "Percentage of Gun Deaths", x = "Shooting Type") + scale_y_continuous(labels = scales::percent)
+                                                                                            #All three variables
 
-ggplot(gun_deaths, aes(x=race, y = age), color = police) + geom_boxplot() + coord_flip()
+ggplot(gun, aes(x=race, y = age)) + geom_boxplot(aes( fill = bypolice)) + coord_flip() + guides(fill = guide_legend(title = "Shooting type")) + labs(title = "Race and Age by Shooting Type", x = "Age", y = "Race")
+
+ggplot(gun, aes(x=bypolice, y = age)) + geom_boxplot(aes( fill = race)) + guides(fill = guide_legend(title = "Race")) + labs(x = "Shooting Type", y = "Age", title = "Shooting Type by Age and Race")
+
 ```
 
 ## Session info

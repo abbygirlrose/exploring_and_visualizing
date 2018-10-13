@@ -54,7 +54,6 @@ kable(caption = "Gun Deaths in the US from 2012-14, shown by month", col.names =
 (n_intent <- gun_deaths %>%
   drop_na(intent) %>%
   count(intent))
-#https://stackoverflow.com/questions/16961921/plot-data-in-descending-order-as-appears-in-data-frame
 
 #make column chart
   ggplot(n_intent, aes(x=reorder(intent, -n), y = n)) + geom_col() + labs(title = "Number of gun deaths by intent 2012-14", x = "Intent", y = "Number of deaths") 
@@ -130,7 +129,7 @@ ggplot(likely, aes(x = race, y = n, fill = intent)) + geom_col() + labs(title = 
   group_by(race, intent) %>%
   count())
 
-ggplot(likely_all, aes(x = race, y = n, fill = intent)) + geom_col(position = "fill") + labs(title = "Comparison of Homicide vs. Suicide over Whites, Blacks, and Hispanics", x = "Race", y = "Gun Deaths")
+ggplot(likely_all, aes(x = race, y = n, fill = intent)) + geom_col(position = "fill") + labs(title = "Comparison of Homicide vs. Suicide over Whites, Blacks, and Hispanics", x = "Race", y = "Gun Deaths") + scale_y_continuous(labels = scales::percent)
 
 #Whites are more likely to die from suicide
 #Blacks are more likely to die from homicide
@@ -146,19 +145,22 @@ ggplot(likely_all, aes(x = race, y = n, fill = intent)) + geom_col(position = "f
 gun_deaths %>%
   group_by(police)%>%
   count()
+
 #gun deaths and age - need to relabel 
-ggplot(gun_deaths, aes(group=police, y = age), at = c("0", "1"), names = c("Non Police Involved", "Police Involved")) + geom_boxplot() + labs(title = "Police Involved vs Non Police Involved Deaths, By Age, 2012-14", y = "Age of Victim") 
+ggplot(gun_deaths, aes(group=police, y = age), at = c("0", "1"), names = c("Non Police Involved", "Police Involved")) + geom_boxplot() + labs(title = "Police Involved vs Non Police Involved Deaths, By Age, 2012-14", y = "Age of Victim")
+
+
 
 #comparison by race
 (race_police <- gun_deaths %>%
   group_by(race, police) %>%
   count())
 
-ggplot(race_police, aes(x = police, y = n, fill = race)) + geom_col(position = "fill") + labs("Police Involved vs Non Police Involved Deaths, By Race, 2012-14", y = "Percentage of Gun Deaths", x = "Police Involved?") 
+ggplot(race_police, aes(x = police, y = n, fill = race)) + geom_col(position = "fill") + labs("Police Involved vs Non Police Involved Deaths, By Race, 2012-14", y = "Percentage of Gun Deaths", x = "Police Involved?") + scale_x_discrete(limits = c("0", "1"), labels = c("Non Police Involved", "Police Involved"))
   
 #All three variables
 
-ggplot(gun_deaths, aes(x=age, y=race), color = police) + geom_boxplot()
+ggplot(gun_deaths, aes(x=race, y = age), color = police) + geom_boxplot() + coord_flip()
 ```
 
 ## Session info

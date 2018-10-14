@@ -111,7 +111,7 @@ Assume that:
 
 ggplot(season, aes(x=Season, y=n)) + geom_col() + labs(title = "Gun Deaths by Season, 2012-14", y = "Gun deaths") 
 
-print("Summer had the most gun deaths")
+print("Summer had the most gun deaths with 26280")
 
 
 ```
@@ -151,12 +151,13 @@ ggplot(gun, aes(x=bypolice, y = age)) + geom_boxplot() + labs(title = "Police In
 
 
 #comparison by race
+
 (race_police <- gun %>%
   group_by(race, bypolice) %>%
   count())
 
 ggplot(race_police, aes(x = bypolice, y = n, fill = race)) + geom_col(position = "fill") + labs("Police Involved vs Non Police Involved Deaths, By Race, 2012-14", y = "Percentage of Gun Deaths", x = "Shooting Type") + scale_y_continuous(labels = scales::percent)
-                                                                                            #All three variables
+                                                                      #All three variables
 
 ggplot(gun, aes(x=race, y = age)) + geom_boxplot(aes( fill = bypolice)) + coord_flip() + guides(fill = guide_legend(title = "Shooting type")) + labs(title = "Race and Age by Shooting Type", x = "Age", y = "Race")
 
